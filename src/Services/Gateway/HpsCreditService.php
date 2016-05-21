@@ -279,7 +279,7 @@ class HpsCreditService extends HpsSoapGatewayService
         return $this->_submitTransaction($hpsTransaction, 'CreditReturn', (isset($details->clientTransactionId) ? $details->clientTransationId : null));
     }
 
-    public function reverse($cardData, $amount, $currency, $details = null)
+    public function reverse($cardData, $amount, $currency, $details = null, $authAmt = null)
     {
         HpsInputValidation::checkCurrency($currency);
         $this->_currency = $currency;
@@ -291,6 +291,9 @@ class HpsCreditService extends HpsSoapGatewayService
         $hpsBlock1 = $xml->createElement('hps:Block1');
 
         $hpsBlock1->appendChild($xml->createElement('hps:Amt', $amount));
+        if ($authAmt !== null) {
+            $hpsBlock1->appendChild($xml->createElement('hps:AuthAmt', $authAmt));
+        }
         $cardDataElement = null;
         if ($cardData instanceof HpsCreditCard) {
             $cardDataElement = $xml->createElement('hps:CardData');
